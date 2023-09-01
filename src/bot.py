@@ -39,14 +39,14 @@ def handle_app_mentions(body, say, logger):
     message = re.sub(r"<@\w+>", "", body["event"]["text"]).strip()
 
     if message == "minutes":
-        minutes_pic_reply(say)
+        reply_minutes_pic(say)
     elif message == "presen":
-        presentation_order_reply(say)
+        reply_presentation_order(say)
     else:
-        random_reply(say)
+        reply_random_message(say)
 
 
-def minutes_pic_reply(say):
+def reply_minutes_pic(say):
     selected_members = random.sample(members, 3)
     roles = ["ファシリテーター", "書記", "Googleカレンダー入力者"]
     assign_message = [f"{role}は <@{member['id']}> さんです。" for role, member in zip(roles, selected_members)]
@@ -54,14 +54,14 @@ def minutes_pic_reply(say):
     say(message)
 
 
-def presentation_order_reply(say):
+def reply_presentation_order(say):
     presenters = random.sample(members, len(members))
     presenters_message = [f"{i + 1}番目は <@{presenters[i]['id']}> さんです。" for i in range(len(presenters))]
     message = "発表順をお伝えします。\n\n" + "\n".join(presenters_message) + "\n\nよろしくお願いします。"
     say(message)
 
 
-def random_reply(say):
+def reply_random_message(say):
     replies = [
         "それはできません。",
         "そこになければないです。",
