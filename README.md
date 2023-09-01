@@ -1,3 +1,5 @@
 # hisho
 
-Describe your project here.
+```bash
+$ rye sync
+```
