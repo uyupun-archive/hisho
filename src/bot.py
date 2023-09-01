@@ -33,36 +33,38 @@ members = [
 
 
 @app.event("app_mention")
-def handle_app_mentions(body, say, logger):
+def handle_app_mentions(body, say, logger) -> None:
     logger.info(body)
 
-    message = re.sub(r"<@\w+>", "", body["event"]["text"]).strip()
+    sender_message = re.sub(r"<@\w+>", "", body["event"]["text"]).strip()
 
-    if message == "minutes":
-        reply_minutes_pic(say)
-    elif message == "presen":
-        reply_presentation_order(say)
+    if sender_message == "minutes":
+        receiver_message = reply_minutes_pic()
+    elif sender_message == "presen":
+        receiver_message = reply_presentation_order()
     else:
-        reply_random_message(say)
+        receiver_message = reply_random_message()
+
+    say(receiver_message)
 
 
-def reply_minutes_pic(say):
+def reply_minutes_pic() -> str:
     selected_members = random.sample(members, 3)
     roles = ["ファシリテーター", "書記", "Googleカレンダー入力者"]
     assign_message = [f"{role}は <@{member['id']}> さんです。" for role, member in zip(roles, selected_members)]
     message = "議事録の担当者をお伝えします。\n\n" + "\n".join(assign_message) + "\n\nよろしくお願いします。"
-    say(message)
+    return message
 
 
-def reply_presentation_order(say):
+def reply_presentation_order() -> str:
     presenters = random.sample(members, len(members))
     presenters_message = [f"{i + 1}番目は <@{presenters[i]['id']}> さんです。" for i in range(len(presenters))]
     message = "発表順をお伝えします。\n\n" + "\n".join(presenters_message) + "\n\nよろしくお願いします。"
-    say(message)
+    return message
 
 
-def reply_random_message(say):
-    replies = [
+def reply_random_message() -> str:
+    messages = [
         "それはできません。",
         "そこになければないです。",
         "何を言っているんですか？",
@@ -73,8 +75,8 @@ def reply_random_message(say):
         "私は召使いではないので。",
         "今回だけ、特別ですよ...？",
     ]
-    reply = random.choice(replies)
-    say(reply)
+    message = random.choice(messages)
+    return message
 
 
 if __name__ == "__main__":
