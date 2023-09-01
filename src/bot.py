@@ -1,5 +1,6 @@
 import os
 import random
+import re
 
 from dotenv import load_dotenv
 from slack_bolt import App
@@ -35,7 +36,7 @@ members = [
 def handle_app_mentions(body, say, logger):
     logger.info(body)
 
-    text = body["event"]["text"].replace("<@U05RC02JLQ0> ", "")
+    text = re.sub(r"<@\w+>", "", body["event"]["text"]).strip()
 
     if text == "minutes":
         minutes_reply(say)
