@@ -18,10 +18,12 @@ build-backend = "hatchling.build"
 
 [tool.rye]
 managed = true
-dev-dependencies = []
+dev-dependencies = [
+    "hupper>=1.12",
+]
 
 [tool.rye.scripts]
-bot = { cmd = "python src/bot.py" }
+bot = { cmd = "hupper -m src.bot" }
 
 [tool.hatch.metadata]
 allow-direct-references = true
