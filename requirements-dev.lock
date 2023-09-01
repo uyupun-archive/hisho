@@ -7,7 +7,11 @@
 #   all-features: false
 
 -e file:.
+apscheduler==3.10.4
 hupper==1.12
 python-dotenv==1.0.0
+pytz==2023.3
+six==1.16.0
 slack-bolt==1.18.0
 slack-sdk==3.21.3
+tzlocal==5.0.1

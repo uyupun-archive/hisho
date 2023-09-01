@@ -1,7 +1,10 @@
 import os
 import random
 import re
+from datetime import datetime
 
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.triggers.cron import CronTrigger
 from dotenv import load_dotenv
 from slack_bolt import App
 
@@ -90,6 +93,23 @@ def reply_random_message() -> str:
     ]
     message = random.choice(messages)
     return message
+
+
+def remind_mtg_candidate_date():
+    # channel_id = "C01U1QN5M5E"
+    channel_id = "C05QN0U6U3U"
+    app.client.chat_postMessage(
+        channel=channel_id,
+        text="<!channel> 今月の月次報告会の候補日を提出してください。"
+    )
+
+scheduler = BackgroundScheduler()
+scheduler.add_job(
+    remind_mtg_candidate_date,
+    # trigger=CronTrigger(minute="30"),
+    trigger=CronTrigger(day="15"),
+)
+scheduler.start()
 
 
 if __name__ == "__main__":
