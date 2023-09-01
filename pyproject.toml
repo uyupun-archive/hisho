@@ -5,7 +5,9 @@ description = "Add your description here"
 authors = [
     { name = "Kazuki Tobita", email = "kazukiti201@gmail.com" }
 ]
-dependencies = []
+dependencies = [
+    "slack-bolt>=1.18.0",
+]
 readme = "README.md"
 requires-python = ">= 3.8"
 
