@@ -38,7 +38,9 @@ def handle_app_mentions(body, say, logger) -> None:
 
     sender_message = re.sub(r"<@\w+>", "", body["event"]["text"]).strip()
 
-    if sender_message == "minutes":
+    if sender_message == "usage":
+        receiver_message = reply_usage()
+    elif sender_message == "minutes":
         receiver_message = reply_minutes_pic()
     elif sender_message == "presen":
         receiver_message = reply_presentation_order()
@@ -46,6 +48,17 @@ def handle_app_mentions(body, say, logger) -> None:
         receiver_message = reply_random_message()
 
     say(receiver_message)
+
+
+def reply_usage() -> str:
+    usage_messages = [
+        "@hisho minutes: 議事録の各担当者を決めます。",
+        "@hisho presen: 発表順を決めます。",
+        "@hisho usage: このメッセージを表示します。",
+        "それ以外のメッセージ: ランダムなメッセージを返します。",
+    ]
+    message =  "秘書の井ノ上たきなです。\n私にできる仕事をまとめました。\n\n" + "\n".join(usage_messages)
+    return message
 
 
 def reply_minutes_pic() -> str:
