@@ -36,17 +36,26 @@ members = [
 def handle_app_mentions(body, say, logger):
     logger.info(body)
 
-    text = re.sub(r"<@\w+>", "", body["event"]["text"]).strip()
+    message = re.sub(r"<@\w+>", "", body["event"]["text"]).strip()
 
-    if text == "minutes":
-        minutes_reply(say)
+    if message == "minutes":
+        minutes_pic_reply(say)
+    elif message == "presen":
+        presentation_order_reply(say)
     else:
         random_reply(say)
 
 
-def minutes_reply(say):
+def minutes_pic_reply(say):
     selected_members = random.sample(members, 3)
     say(f"議事録の担当者をお伝えします。\n\nファシリテーターは <@{selected_members[0]['id']}> さんです。\n書記は <@{selected_members[1]['id']}> さんです。\nGoogleカレンダー入力者は <@{selected_members[2]['id']}> さんです。\n\nよろしくお願いします。")
+
+
+def presentation_order_reply(say):
+    presenters = random.sample(members, len(members))
+    presenters_message = [f"{i + 1}番目は <@{presenters[i]['id']}> さんです。" for i in range(len(presenters))]
+    message = "発表順をお伝えします。\n\n" + "\n".join(presenters_message) + "\n\nよろしくお願いします。"
+    say(message)
 
 
 def random_reply(say):
