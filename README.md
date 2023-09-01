@@ -1,5 +1,9 @@
 # hisho
 
+<img src="takina.png" width="200">
+
+### 環境構築
+
 - 事前に [rye](https://rye-up.com/) のインストールが必要
 - 事前に [ngrok](https://ngrok.com/download) のインストールと [ngrok](https://dashboard.ngrok.com/signup) の登録が必要
 
