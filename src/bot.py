@@ -16,10 +16,16 @@ app = App(token=bot_user_oauth_token, signing_secret=signing_secret)
 def handle_app_mentions(body, say, logger):
     logger.info(body)
 
-    text = body["event"]["text"]
-    print(text)
+    text = body["event"]["text"].replace("<@U05RC02JLQ0> ", "")
 
-    random_reply(say)
+    if text == "minutes":
+        minutes_reply(say)
+    else:
+        random_reply(say)
+
+
+def minutes_reply(say):
+    say("議事録の担当者をお伝えします。\n\nファシリテーターはかずきちさんです。\n書記はたかしさんです。\nGoogleカレンダー入力者はかっきーさんです。\n\nよろしくお願いします。")
 
 
 def random_reply(say):
