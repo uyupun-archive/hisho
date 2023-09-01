@@ -11,6 +11,25 @@ bot_user_oauth_token = os.environ["BOT_USER_OAUTH_TOKEN"]
 signing_secret = os.environ["SIGNING_SECRET"]
 app = App(token=bot_user_oauth_token, signing_secret=signing_secret)
 
+members = [
+    {
+        "id": "U01SX25JC6B",
+        "name": "Daisuke",
+    },
+    {
+        "id": "U01T7J3GXSR",
+        "name": "kakimoto",
+    },
+    {
+        "id": "U01TP8Y2MLZ",
+        "name": "Kazukichi",
+    },
+    {
+        "id": "U01TC1RLQR1",
+        "name": "takashi",
+    },
+]
+
 
 @app.event("app_mention")
 def handle_app_mentions(body, say, logger):
@@ -25,7 +44,8 @@ def handle_app_mentions(body, say, logger):
 
 
 def minutes_reply(say):
-    say("議事録の担当者をお伝えします。\n\nファシリテーターはかずきちさんです。\n書記はたかしさんです。\nGoogleカレンダー入力者はかっきーさんです。\n\nよろしくお願いします。")
+    selected_members = random.sample(members, 3)
+    say(f"議事録の担当者をお伝えします。\n\nファシリテーターは <@{selected_members[0]['id']}> さんです。\n書記は <@{selected_members[1]['id']}> さんです。\nGoogleカレンダー入力者は <@{selected_members[2]['id']}> さんです。\n\nよろしくお願いします。")
 
 
 def random_reply(say):
