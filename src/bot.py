@@ -48,7 +48,10 @@ def handle_app_mentions(body, say, logger):
 
 def minutes_pic_reply(say):
     selected_members = random.sample(members, 3)
-    say(f"議事録の担当者をお伝えします。\n\nファシリテーターは <@{selected_members[0]['id']}> さんです。\n書記は <@{selected_members[1]['id']}> さんです。\nGoogleカレンダー入力者は <@{selected_members[2]['id']}> さんです。\n\nよろしくお願いします。")
+    roles = ["ファシリテーター", "書記", "Googleカレンダー入力者"]
+    assign_message = [f"{role}は <@{member['id']}> さんです。" for role, member in zip(roles, selected_members)]
+    message = "議事録の担当者をお伝えします。\n\n" + "\n".join(assign_message) + "\n\nよろしくお願いします。"
+    say(message)
 
 
 def presentation_order_reply(say):
