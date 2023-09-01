@@ -1,4 +1,5 @@
 import os
+import random
 
 from dotenv import load_dotenv
 from slack_bolt import App
@@ -14,7 +15,27 @@ app = App(token=bot_user_oauth_token, signing_secret=signing_secret)
 @app.event("app_mention")
 def handle_app_mentions(body, say, logger):
     logger.info(body)
-    say("Hello there!")
+
+    text = body["event"]["text"]
+    print(text)
+
+    random_reply(say)
+
+
+def random_reply(say):
+    replies = [
+        "それはできません。",
+        "そこになければないです。",
+        "何を言っているんですか？",
+        "気持ちが悪いです。",
+        "気分が悪くなってきました。",
+        "いいかげんにしてください。",
+        "そろそろキレますよ。",
+        "私は召使いではないので。",
+        "今回だけ、特別ですよ...？",
+    ]
+    reply = random.choice(replies)
+    say(reply)
 
 
 if __name__ == "__main__":
