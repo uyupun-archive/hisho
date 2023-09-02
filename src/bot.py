@@ -51,7 +51,7 @@ def handle_app_mentions(body, say, logger) -> None:
         receiver_message = set_mtg_date(date=date)
     elif sender_command == "minutes":
         receiver_message = reply_minutes_pic()
-    elif sender_command == "presen":
+    elif sender_command == "order":
         receiver_message = reply_presentation_order()
     else:
         receiver_message = reply_random_message()
@@ -61,13 +61,14 @@ def handle_app_mentions(body, say, logger) -> None:
 
 def reply_usage() -> str:
     usage_messages = [
-        "@hisho mtg: 今月の月次報告会の日時を設定します。"
+        "@hisho mtg YYYY/mm/dd: 今月の月次報告会の日時を設定します。",
         "@hisho minutes: 議事録の各担当者を決めます。",
-        "@hisho presen: 発表順を決めます。",
+        "@hisho order: 発表順を決めます。",
         "@hisho usage: このメッセージを表示します。",
-        "それ以外のメッセージ: ランダムなメッセージを返します。",
+        "@hisho それ以外のメッセージ: ランダムなメッセージを返します。",
     ]
-    message =  "秘書の井ノ上たきなです。\n私にできる仕事をまとめました。\n\n" + "\n".join(usage_messages)
+    code_block_message = "```\n" + "\n".join(usage_messages) + "\n```"
+    message = "秘書の井ノ上たきなです。\n私にできる仕事をまとめました。\n\n" + code_block_message
     return message
 
 
