@@ -6,9 +6,10 @@ from dotenv import load_dotenv
 load_dotenv()
 
 config = {
-    "is_debug": os.getenv("IS_DEBUG", "false").lower() == "true",
+    "port": int(os.environ.get("PORT", 3000)),
     "bot_user_oauth_token": os.environ["BOT_USER_OAUTH_TOKEN"],
     "signing_secret": os.environ["SIGNING_SECRET"],
+    "is_debug": os.getenv("IS_DEBUG", "false").lower() == "true",
     "members": [
         {
             "id": "U01SX25JC6B",
