@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
 from apscheduler.triggers.date import DateTrigger
+from apscheduler.jobstores.base import JobLookupError
 from dotenv import load_dotenv
 from slack_bolt import App
 
@@ -56,8 +57,13 @@ def handle_app_mentions(body, say, logger) -> None:
         receiver_message = reply_minutes_pic()
     elif sender_command == "order":
         receiver_message = reply_presentation_order()
-    elif sender_command == "reminds":
+    elif sender_command == "remind:list":
         receiver_message = get_reminds()
+    elif sender_command == "remind:remove":
+        id = None
+        if len(sender_options) >= 1:
+            id = sender_options[0]
+        receiver_message = remove_remind(id=id)
     else:
         receiver_message = reply_random_message()
 
@@ -69,7 +75,8 @@ def reply_usage() -> str:
         "@hisho mtg YYYY/mm/dd: 今月の月次報告会の日時を設定し、前日の朝9時にリマインドします。",
         "@hisho minutes: 議事録の各担当者を決めます。",
         "@hisho order: 発表順を決めます。",
-        "@hisho reminds: 予約されているリマインドの一覧を表示します。"
+        "@hisho remind:list: 予約されているリマインドの一覧を表示します。"
+        "@hisho remind:remove ID: 指定されたIDのリマインドを削除します。"
         "@hisho usage: このメッセージを表示します。",
         "@hisho それ以外のメッセージ: ランダムなメッセージを返します。",
     ]
@@ -102,6 +109,19 @@ def get_reminds() -> str:
     code_block_message = "```\n" + "\n".join(job_messages) + "\n```"
     message = "予約されているリマインドの一覧をお伝えします。\n\n" + code_block_message
     return message
+
+
+def remove_remind(id: str | None) -> str:
+    if id is None:
+        return "IDが指定されていません。\n`@hisho remind:remove ID` の形式で指定してください。"
+    elif id == "mtg_candidate_reminder":
+        return "指定されたリマインドは削除できません。"
+
+    try:
+        scheduler.remove_job(id)
+        return "指定されたIDのリマインドを削除しました。"
+    except JobLookupError:
+        return f"指定されたIDのリマインドは存在しませんでした。"
 
 
 def set_mtg_date(date: str | None) -> str:
