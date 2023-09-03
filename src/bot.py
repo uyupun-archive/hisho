@@ -95,6 +95,7 @@ def remind_mtg_date():
         text="<!channel> 明日の21時〜月次報告会です。"
     )
 
+
 def get_reminds() -> str:
     jobs = scheduler.get_jobs()
     job_messages = [f"ID: {job.id}, 日時: {job.next_run_time}" for job in jobs]
@@ -159,7 +160,7 @@ def reply_random_message() -> str:
 scheduler.add_job(
     remind_mtg_candidate_date,
     # trigger=CronTrigger(minute="30"),
-    trigger=CronTrigger(day="15"),
+    trigger=CronTrigger(day="15", hour="9", minute="0"),
     id="mtg_candidate_reminder",
 )
 scheduler.start()
