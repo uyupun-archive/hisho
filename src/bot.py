@@ -56,6 +56,8 @@ def handle_app_mentions(body, say, logger) -> None:
         receiver_message = reply_minutes_pic()
     elif sender_command == "order":
         receiver_message = reply_presentation_order()
+    elif sender_command == "reminds":
+        receiver_message = get_reminds()
     else:
         receiver_message = reply_random_message()
 
@@ -67,6 +69,7 @@ def reply_usage() -> str:
         "@hisho mtg YYYY/mm/dd: 今月の月次報告会の日時を設定し、前日の朝9時にリマインドします。",
         "@hisho minutes: 議事録の各担当者を決めます。",
         "@hisho order: 発表順を決めます。",
+        "@hisho reminds: 予約されているリマインドの一覧を表示します。"
         "@hisho usage: このメッセージを表示します。",
         "@hisho それ以外のメッセージ: ランダムなメッセージを返します。",
     ]
@@ -92,6 +95,13 @@ def remind_mtg_date():
         text="<!channel> 明日の21時〜月次報告会です。"
     )
 
+def get_reminds() -> str:
+    jobs = scheduler.get_jobs()
+    job_messages = [f"ID: {job.id}, 日時: {job.next_run_time}" for job in jobs]
+    code_block_message = "```\n" + "\n".join(job_messages) + "\n```"
+    message = "予約されているリマインドの一覧をお伝えします。\n\n" + code_block_message
+    return message
+
 
 def set_mtg_date(date: str | None) -> str:
     if date is None:
@@ -106,9 +116,11 @@ def set_mtg_date(date: str | None) -> str:
     if reminder_time < datetime.now():
         return "前日の朝9時以降に月次報告会の日時は設定できません。"
 
+    id = "mtg_reminder_" + reminder_time.strftime('%Y-%m-%d %H:%M:%S').replace('-', '_').replace(' ', '_').replace(':', '_')
     scheduler.add_job(
         remind_mtg_date,
         trigger=DateTrigger(reminder_time),
+        id=id,
     )
     return "月次報告会の前日の朝9時にリマインドを設定しました。"
 
@@ -148,6 +160,7 @@ scheduler.add_job(
     remind_mtg_candidate_date,
     # trigger=CronTrigger(minute="30"),
     trigger=CronTrigger(day="15"),
+    id="mtg_candidate_reminder",
 )
 scheduler.start()
 
