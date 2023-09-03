@@ -1,4 +1,3 @@
-import os
 import re
 
 from slack_bolt import App
@@ -12,9 +11,9 @@ config.set_app(app)
 
 
 def parse_command(body) -> tuple[str, list[str]]:
-    sender_message = re.sub(r"<@\w+>", "", body["event"]["text"]).strip().split()
-    command = sender_message[0] if sender_message else ""
-    options = sender_message[1:]
+    message = re.sub(r"<@\w+>", "", body["event"]["text"]).strip().split()
+    command = message[0] if message else ""
+    options = message[1:]
     return command, options
 
 
@@ -24,7 +23,7 @@ def handle_app_mentions(body, say, logger) -> None:
 
     command, options = parse_command(body)
 
-    commands = {
+    command_funcs = {
         "usage": mention.reply_usage,
         "mtg": lambda: mention.set_mtg_date(date=options[0] if options else None),
         "minutes": mention.reply_minutes_pic,
@@ -33,8 +32,8 @@ def handle_app_mentions(body, say, logger) -> None:
         "remind:remove": lambda: mention.remove_remind(id=options[0] if options else None),
     }
 
-    receiver_message = commands.get(command, mention.reply_random_message)
-    say(receiver_message())
+    command_func = command_funcs.get(command, mention.reply_random_message)
+    say(command_func())
 
 if __name__ == "__main__":
     port = config_["port"]
