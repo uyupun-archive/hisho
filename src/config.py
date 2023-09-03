@@ -71,4 +71,5 @@ class Config:
     def get_post_channel_id(self) -> str:
         return self.channels["proj-hisho-sandbox"] if self.is_debug else self.channels["std-mtg"]
 
+
 config = Config()

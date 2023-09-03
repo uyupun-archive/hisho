@@ -35,6 +35,7 @@ def handle_app_mentions(body, say, logger) -> None:
     command_func = command_funcs.get(command, mention.reply_random_message)
     say(command_func())
 
+
 if __name__ == "__main__":
     port = config.port
     app.start(port=port)
