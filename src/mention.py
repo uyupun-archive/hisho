@@ -14,8 +14,16 @@ config = config.config
 scheduler = BackgroundScheduler()
 
 
+def format_message(message: str, messages: list[str]) -> str:
+    return f"{message}\n\n" + "\n".join(messages)
+
+
+def generate_code_block(messages: list[str]) -> str:
+    return "```\n" + "\n".join(messages) + "\n```"
+
+
 def reply_usage() -> str:
-    usage_messages = [
+    messages = [
         "@hisho mtg YYYY/mm/dd: 今月の月次報告会の日時を設定し、前日の朝9時にリマインドします。",
         "@hisho minutes: 議事録の各担当者を決めます。",
         "@hisho order: 発表順を決めます。",
@@ -24,21 +32,17 @@ def reply_usage() -> str:
         "@hisho usage: このメッセージを表示します。",
         "@hisho それ以外のメッセージ: ランダムなメッセージを返します。",
     ]
-    code_block_message = "```\n" + "\n".join(usage_messages) + "\n```"
-    message = "秘書の井ノ上たきなです。\n私にできる仕事をまとめました。\n\n" + code_block_message
-    return message
+    return format_message("秘書の井ノ上たきなです。\n私にできる仕事をまとめました。", [generate_code_block(messages)])
 
 
 def get_reminds() -> str:
     jobs = scheduler.get_jobs()
-    job_messages = [f"ID: {job.id}, 日時: {job.next_run_time.strftime('%Y/%m/%d %H:%M:%S')}" for job in jobs]
-    code_block_message = "```\n" + "\n".join(job_messages) + "\n```"
-    message = "予約されているリマインドの一覧をお伝えします。\n\n" + code_block_message
-    return message
+    messages = [f"ID: {job.id}, 日時: {job.next_run_time.strftime('%Y/%m/%d %H:%M:%S')}" for job in jobs]
+    return format_message("予約されているリマインドの一覧をお伝えします。", [generate_code_block(messages)])
 
 
 def remove_remind(id: str | None) -> str:
-    if id is None:
+    if not id:
         return "IDが指定されていません。\n`@hisho remind:remove ID` の形式で指定してください。"
     elif id == "mtg_candidate_reminder":
         return "指定されたリマインドは削除できません。"
@@ -47,45 +51,35 @@ def remove_remind(id: str | None) -> str:
         scheduler.remove_job(id)
         return "指定されたIDのリマインドを削除しました。"
     except JobLookupError:
-        return f"指定されたIDのリマインドは存在しませんでした。"
+        return "指定されたIDのリマインドは存在しませんでした。"
 
 
 def set_mtg_date(date: str | None) -> str:
-    if date is None:
+    if not date:
         return "日時が指定されていません。\n`@hisho mtg YYYY/mm/dd` の形式で指定してください。"
     elif not re.match(r"\d{4}/\d{2}/\d{2}", date):
         return "日時の形式が違います。\n`@hisho mtg YYYY/mm/dd` の形式で指定してください。"
 
-    mtg_date = datetime.strptime(date, "%Y/%m/%d")
-    reminder_time = mtg_date - timedelta(days=1)
-    reminder_time = reminder_time.replace(hour=9, minute=0, second=0, microsecond=0)
-
+    reminder_time = (datetime.strptime(date, "%Y/%m/%d") - timedelta(days=1)).replace(hour=9, minute=0)
     if reminder_time < datetime.now():
         return "前日の朝9時以降に月次報告会の日時は設定できません。"
 
-    id = "mtg_reminder_" + reminder_time.strftime('%Y-%m-%d %H:%M:%S').replace('-', '_').replace(' ', '_').replace(':', '_')
-    scheduler.add_job(
-        remind.remind_mtg_date,
-        trigger=DateTrigger(reminder_time),
-        id=id,
-    )
+    id = f"mtg_reminder_{reminder_time.strftime('%Y_%m_%d_%H_%M_%S')}"
+    scheduler.add_job(remind.remind_mtg_date, trigger=DateTrigger(reminder_time), id=id)
     return "月次報告会の前日の朝9時にリマインドを設定しました。"
 
 
 def reply_minutes_pic() -> str:
     selected_members = random.sample(config.members, 3)
     roles = ["ファシリテーター", "書記", "Googleカレンダー入力者"]
-    assign_message = [f"{role}は <@{member['id']}> さんです。" for role, member in zip(roles, selected_members)]
-    message = "議事録の担当者をお伝えします。\n\n" + "\n".join(assign_message) + "\n\nよろしくお願いします。"
-    return message
+    messages = [f"{role}は <@{member['id']}> さんです。" for role, member in zip(roles, selected_members)]
+    return format_message("議事録の担当者をお伝えします。", messages + ["\nよろしくお願いします。"])
 
 
 def reply_presentation_order() -> str:
-    members = config.members
-    presenters = random.sample(members, len(members))
-    presenters_message = [f"{i + 1}番目は <@{presenters[i]['id']}> さんです。" for i in range(len(presenters))]
-    message = "発表順をお伝えします。\n\n" + "\n".join(presenters_message) + "\n\nよろしくお願いします。"
-    return message
+    presenters = random.sample(config.members, len(config.members))
+    messages = [f"{i + 1}番目は <@{presenter['id']}> さんです。" for i, presenter in enumerate(presenters)]
+    return format_message("発表順をお伝えします。", messages + ["\nよろしくお願いします。"])
 
 
 def reply_random_message() -> str:
@@ -100,8 +94,7 @@ def reply_random_message() -> str:
         "私は召使いではないので。",
         "今回だけ、特別ですよ...？",
     ]
-    message = random.choice(messages)
-    return message
+    return random.choice(messages)
 
 
 scheduler.add_job(
