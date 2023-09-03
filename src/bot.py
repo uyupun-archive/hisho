@@ -41,13 +41,16 @@ members = [
 def handle_app_mentions(body, say, logger) -> None:
     logger.info(body)
 
-    sender_message = re.sub(r"<@\w+>", "", body["event"]["text"]).strip()
-    sender_command = sender_message.split()[0]
+    sender_message = re.sub(r"<@\w+>", "", body["event"]["text"]).strip().split()
+    sender_command = sender_message[0] if len(sender_message) >= 1 else None
+    sender_options = sender_message[1:] if len(sender_message) >= 2 else []
 
     if sender_command == "usage":
         receiver_message = reply_usage()
     elif sender_command == "mtg":
-        date = sender_message.split()[1]
+        date = None
+        if len(sender_options) >= 1:
+            date = sender_options[0]
         receiver_message = set_mtg_date(date=date)
     elif sender_command == "minutes":
         receiver_message = reply_minutes_pic()
@@ -61,7 +64,7 @@ def handle_app_mentions(body, say, logger) -> None:
 
 def reply_usage() -> str:
     usage_messages = [
-        "@hisho mtg YYYY/mm/dd: 今月の月次報告会の日時を設定します。",
+        "@hisho mtg YYYY/mm/dd: 今月の月次報告会の日時を設定し、前日の朝9時にリマインドします。",
         "@hisho minutes: 議事録の各担当者を決めます。",
         "@hisho order: 発表順を決めます。",
         "@hisho usage: このメッセージを表示します。",
@@ -90,10 +93,19 @@ def remind_mtg_date():
     )
 
 
-def set_mtg_date(date: str) -> str:
+def set_mtg_date(date: str | None) -> str:
+    if date is None:
+        return "日時が指定されていません。\n`@hisho mtg YYYY/mm/dd` の形式で指定してください。"
+    elif not re.match(r"\d{4}/\d{2}/\d{2}", date):
+        return "日時の形式が違います。\n`@hisho mtg YYYY/mm/dd` の形式で指定してください。"
+
     mtg_date = datetime.strptime(date, "%Y/%m/%d")
     reminder_time = mtg_date - timedelta(days=1)
     reminder_time = reminder_time.replace(hour=9, minute=0, second=0, microsecond=0)
+
+    if reminder_time < datetime.now():
+        return "前日の朝9時以降に月次報告会の日時は設定できません。"
+
     scheduler.add_job(
         remind_mtg_date,
         trigger=DateTrigger(reminder_time),
