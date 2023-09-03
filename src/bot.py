@@ -98,7 +98,7 @@ def remind_mtg_date():
 
 def get_reminds() -> str:
     jobs = scheduler.get_jobs()
-    job_messages = [f"ID: {job.id}, 日時: {job.next_run_time}" for job in jobs]
+    job_messages = [f"ID: {job.id}, 日時: {job.next_run_time.strftime('%Y/%m/%d %H:%M:%S')}" for job in jobs]
     code_block_message = "```\n" + "\n".join(job_messages) + "\n```"
     message = "予約されているリマインドの一覧をお伝えします。\n\n" + code_block_message
     return message
