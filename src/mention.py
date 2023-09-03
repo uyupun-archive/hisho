@@ -73,7 +73,7 @@ def set_mtg_date(date: str | None) -> str:
 
 
 def reply_minutes_pic() -> str:
-    selected_members = random.sample(config["members"], 3)
+    selected_members = random.sample(config.members, 3)
     roles = ["ファシリテーター", "書記", "Googleカレンダー入力者"]
     assign_message = [f"{role}は <@{member['id']}> さんです。" for role, member in zip(roles, selected_members)]
     message = "議事録の担当者をお伝えします。\n\n" + "\n".join(assign_message) + "\n\nよろしくお願いします。"
@@ -81,7 +81,8 @@ def reply_minutes_pic() -> str:
 
 
 def reply_presentation_order() -> str:
-    presenters = random.sample(config["members"], len(config["members"]))
+    members = config.members
+    presenters = random.sample(members, len(members))
     presenters_message = [f"{i + 1}番目は <@{presenters[i]['id']}> さんです。" for i in range(len(presenters))]
     message = "発表順をお伝えします。\n\n" + "\n".join(presenters_message) + "\n\nよろしくお願いします。"
     return message
