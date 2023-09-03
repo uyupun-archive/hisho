@@ -1,5 +1,7 @@
 # hisho
 
+- うゆぷんの雑用を一手に引き受けてくれるDA出身の秘書、井ノ上たきなさんです
+
 <img src="takina.png" width="200">
 
 ### 環境構築
@@ -19,3 +21,7 @@ $ ngrok http 3000
 
 - 上記でngrokから発行されたURLの末尾に `/slack/events` を付加した `https://XXXX-XXXX-XXX-XXX-XXXX-XXXX-XXXX-XXXX-XXXX.ngrok-free.app/slack/events` を [Event Subscriptions > Enable Events](https://api.slack.com/apps/A05QQL8BRJ8/event-subscriptions) に設定し、チャレンジする
 - チャレンジに成功したら、 [Event Subscriptions > Subscribe to bot events](https://api.slack.com/apps/A05QQL8BRJ8/event-subscriptions) に `app_mention` を追加する
+
+### リンク
+
+- [Slack API](https://api.slack.com/apps/A05QQL8BRJ8)

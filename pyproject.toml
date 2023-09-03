@@ -1,7 +1,7 @@
 [project]
 name = "hisho"
 version = "0.1.0"
-description = "Add your description here"
+description = "うゆぷんの雑用を一手に引き受けてくれるDA出身の秘書、井ノ上たきなです"
 authors = [
     { name = "Kazuki Tobita", email = "kazukiti201@gmail.com" }
 ]
