@@ -13,6 +13,9 @@ from slack_bolt import App
 
 load_dotenv()
 
+is_debug_str = os.getenv("IS_DEBUG", "false").lower()
+is_debug = is_debug_str == "true"
+
 bot_user_oauth_token = os.environ["BOT_USER_OAUTH_TOKEN"]
 signing_secret = os.environ["SIGNING_SECRET"]
 app = App(token=bot_user_oauth_token, signing_secret=signing_secret)
@@ -36,6 +39,13 @@ members = [
         "name": "takashi",
     },
 ]
+
+
+def get_post_channel_id() -> str:
+    if is_debug:
+        return "C05QN0U6U3U"
+    else:
+        return "C01U1QN5M5E"
 
 
 @app.event("app_mention")
@@ -86,8 +96,7 @@ def reply_usage() -> str:
 
 
 def remind_mtg_candidate_date():
-    # channel_id = "C01U1QN5M5E"
-    channel_id = "C05QN0U6U3U"
+    channel_id = get_post_channel_id()
     app.client.chat_postMessage(
         channel=channel_id,
         text="<!channel> 今月の月次報告会の候補日を提出してください。"
@@ -95,8 +104,7 @@ def remind_mtg_candidate_date():
 
 
 def remind_mtg_date():
-    # channel_id = "C01U1QN5M5E"
-    channel_id = "C05QN0U6U3U"
+    channel_id = get_post_channel_id()
     app.client.chat_postMessage(
         channel=channel_id,
         text="<!channel> 明日の21時〜月次報告会です。"
@@ -179,7 +187,6 @@ def reply_random_message() -> str:
 
 scheduler.add_job(
     remind_mtg_candidate_date,
-    # trigger=CronTrigger(minute="30"),
     trigger=CronTrigger(day="15", hour="9", minute="0"),
     id="mtg_candidate_reminder",
 )
