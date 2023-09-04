@@ -14,7 +14,7 @@
 $ cp .env.example .env
 $ touch database.sqlite
 $ rye sync
-$ rye run bot
+$ rye run dev
 # 事前に https://dashboard.ngrok.com/login からログインし、 authtoken を取得
 $ ngrok config add-authtoken <your authtoken>
 $ ngrok http 3000

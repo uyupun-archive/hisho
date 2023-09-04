@@ -25,7 +25,7 @@ dev-dependencies = [
 ]
 
 [tool.rye.scripts]
-bot = { cmd = "hupper -m src.bot" }
+dev = { cmd = "hupper -m src.bot" }
 
 [tool.hatch.metadata]
 allow-direct-references = true
