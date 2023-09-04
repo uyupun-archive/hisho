@@ -24,6 +24,7 @@ class Scheduler:
             remind.remind_mtg_candidate_date,
             trigger=CronTrigger(day="15", hour="9", minute="0"),
             id="mtg_candidate_reminder",
+            name="月次報告会候補日提出リマインド",
             replace_existing=True,
         )
 
@@ -37,5 +38,5 @@ class Scheduler:
         except JobLookupError:
             return False
 
-    def add_job(self, func: Callable[..., Any], trigger: BaseTrigger, id: str, replace_existing: bool=False):
-        self._scheduler.add_job(func, trigger=trigger, id=id, replace_existing=replace_existing)
+    def add_job(self, func: Callable[..., Any], trigger: BaseTrigger, id: str, name: str="", replace_existing: bool=False):
+        self._scheduler.add_job(func, trigger=trigger, id=id, name=name, replace_existing=replace_existing)

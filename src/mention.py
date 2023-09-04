@@ -41,7 +41,7 @@ def reply_usage() -> str:
 
 def get_reminds() -> str:
     jobs = scheduler.get_jobs()
-    messages = [f"ID: {job.id}, 日時: {job.next_run_time.strftime('%Y/%m/%d %H:%M:%S')}" for job in jobs]
+    messages = [f"名前: {job.name}, ID: {job.id}, 日時: {job.next_run_time.strftime('%Y/%m/%d %H:%M:%S')}" for job in jobs]
     return format_message("予約されているリマインドの一覧をお伝えします。", [generate_code_block(messages)])
 
 
@@ -69,7 +69,7 @@ def set_mtg_date(date: str | None) -> str:
         return "前日の朝9時以降に月次報告会の日時は設定できません。"
 
     id = f"mtg_reminder_{reminder_time.strftime('%Y_%m_%d_%H_%M_%S')}"
-    scheduler.add_job(remind.remind_mtg_date, trigger=DateTrigger(reminder_time), id=id)
+    scheduler.add_job(remind.remind_mtg_date, trigger=DateTrigger(reminder_time), id=id, name="月次報告会直前リマインド")
     return "月次報告会の前日の朝9時にリマインドを設定しました。"
 
 
