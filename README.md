@@ -30,4 +30,4 @@ $ ngrok http 3000
 
 ### アーキテクチャ
 
-<img src="images/architecture.png" width="600">
+<img src="images/architecture.png" width="1000">
