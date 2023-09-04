@@ -2,7 +2,7 @@
 
 - うゆぷんの雑用を一手に引き受けてくれるDA出身の秘書、井ノ上たきなさんです
 
-<img src="takina.png" width="200">
+<img src="images/takina.png" width="200">
 
 ### 環境構築
 
@@ -27,3 +27,7 @@ $ ngrok http 3000
 ### リンク
 
 - [Slack API](https://api.slack.com/apps/A05QQL8BRJ8)
+
+### アーキテクチャ
+
+<img src="images/architecture.png" width="600">
