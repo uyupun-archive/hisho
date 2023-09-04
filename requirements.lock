@@ -8,9 +8,12 @@
 
 -e file:.
 apscheduler==3.10.4
+greenlet==2.0.2
 python-dotenv==1.0.0
 pytz==2023.3
 six==1.16.0
 slack-bolt==1.18.0
 slack-sdk==3.21.3
+sqlalchemy==2.0.20
+typing-extensions==4.7.1
 tzlocal==5.0.1

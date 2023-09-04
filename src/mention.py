@@ -2,6 +2,7 @@ import random
 import re
 from datetime import datetime, timedelta
 
+from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
 from apscheduler.triggers.date import DateTrigger
@@ -11,7 +12,10 @@ from . import config, remind
 
 
 config = config.config
-scheduler = BackgroundScheduler()
+jobstores = {
+    "default": SQLAlchemyJobStore(url="sqlite:///database.sqlite")
+}
+scheduler = BackgroundScheduler(jobstores=jobstores)
 
 
 def format_message(message: str, messages: list[str]) -> str:
@@ -101,5 +105,6 @@ scheduler.add_job(
     remind.remind_mtg_candidate_date,
     trigger=CronTrigger(day="15", hour="9", minute="0"),
     id="mtg_candidate_reminder",
+    replace_existing=True,
 )
 scheduler.start()

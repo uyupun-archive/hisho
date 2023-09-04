@@ -12,6 +12,7 @@
 ```bash
 # 事前にBot User OAuth TokenとSigning Secretの設定が必要
 $ cp .env.example .env
+$ touch database.sqlite
 $ rye sync
 $ rye run bot
 # 事前に https://dashboard.ngrok.com/login からログインし、 authtoken を取得
