@@ -22,9 +22,10 @@ class Config:
             ],
             "channels": {
                 "std-mtg": "C01U1QN5M5E",
-                "proj-hisho-sandbox": "C05QN0U6U3U"
+                "proj-hisho-sandbox": "C05QN0U6U3U",
             },
-            "app": None
+            "app": None,
+            "scheduler": None,
         }
 
     def _get_env(self, key: str, default: Any = None) -> str:
@@ -68,8 +69,23 @@ class Config:
     def app(self, app):
         self._config["app"] = app
 
+    @property
+    def scheduler(self):
+        return self._config["scheduler"]
+
+    @scheduler.setter
+    def scheduler(self, scheduler):
+        self._config["scheduler"] = scheduler
+
     def get_post_channel_id(self) -> str:
         return self.channels["proj-hisho-sandbox"] if self.is_debug else self.channels["std-mtg"]
+
+
+def get_config() -> Config:
+    global config
+    if not config:
+        config = Config()
+    return config
 
 
 config = Config()

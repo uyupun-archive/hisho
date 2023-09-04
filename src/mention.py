@@ -2,20 +2,20 @@ import random
 import re
 from datetime import datetime, timedelta
 
-from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
-from apscheduler.schedulers.background import BackgroundScheduler
-from apscheduler.triggers.cron import CronTrigger
 from apscheduler.triggers.date import DateTrigger
 from apscheduler.jobstores.base import JobLookupError
 
 from . import config, remind
 
 
-config = config.config
-jobstores = {
-    "default": SQLAlchemyJobStore(url="sqlite:///database.sqlite")
-}
-scheduler = BackgroundScheduler(jobstores=jobstores)
+config_ = None
+scheduler = None
+
+
+def init() -> None:
+    global config_, scheduler
+    config_ = config.get_config()
+    scheduler = config_.scheduler
 
 
 def format_message(message: str, messages: list[str]) -> str:
@@ -74,14 +74,14 @@ def set_mtg_date(date: str | None) -> str:
 
 
 def reply_minutes_pic() -> str:
-    selected_members = random.sample(config.members, 3)
+    selected_members = random.sample(config_.members, 3)
     roles = ["ファシリテーター", "書記", "Googleカレンダー入力者"]
     messages = [f"{role}は <@{member['id']}> さんです。" for role, member in zip(roles, selected_members)]
     return format_message("議事録の担当者をお伝えします。", messages + ["\nよろしくお願いします。"])
 
 
 def reply_presentation_order() -> str:
-    presenters = random.sample(config.members, len(config.members))
+    presenters = random.sample(config_.members, len(config_.members))
     messages = [f"{i + 1}番目は <@{presenter['id']}> さんです。" for i, presenter in enumerate(presenters)]
     return format_message("発表順をお伝えします。", messages + ["\nよろしくお願いします。"])
 
@@ -99,12 +99,3 @@ def reply_random_message() -> str:
         "今回だけ、特別ですよ...？",
     ]
     return random.choice(messages)
-
-
-scheduler.add_job(
-    remind.remind_mtg_candidate_date,
-    trigger=CronTrigger(day="15", hour="9", minute="0"),
-    id="mtg_candidate_reminder",
-    replace_existing=True,
-)
-scheduler.start()

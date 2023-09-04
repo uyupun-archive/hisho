@@ -2,12 +2,18 @@ import re
 
 from slack_bolt import App
 
-from . import config, mention
+from . import config, scheduler, mention
 
 
-config = config.config
-app = App(token=config.bot_user_oauth_token, signing_secret=config.signing_secret)
-config.app = app
+config_instance = config.get_config()
+
+app = App(token=config_instance.bot_user_oauth_token, signing_secret=config_instance.signing_secret)
+config_instance.app = app
+
+scheduler = scheduler.Scheduler()
+config_instance.scheduler = scheduler
+
+mention.init()
 
 
 def parse_command(body) -> tuple[str, list[str]]:
@@ -37,5 +43,5 @@ def handle_app_mentions(body, say, logger) -> None:
 
 
 if __name__ == "__main__":
-    port = config.port
+    port = config_instance.port
     app.start(port=port)
