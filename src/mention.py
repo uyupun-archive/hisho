@@ -51,10 +51,10 @@ def remove_remind(id: str | None) -> str:
     elif id == "mtg_candidate_reminder":
         return "指定されたリマインドは削除できません。"
 
-    try:
-        scheduler.remove_job(id)
+    is_removed = scheduler.remove_job(id)
+    if is_removed:
         return "指定されたIDのリマインドを削除しました。"
-    except JobLookupError:
+    else:
         return "指定されたIDのリマインドは存在しませんでした。"
 
 

@@ -5,7 +5,6 @@ from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 from apscheduler.triggers.base import BaseTrigger
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
-from apscheduler.triggers.date import DateTrigger
 from apscheduler.jobstores.base import JobLookupError
 
 from . import remind
@@ -31,8 +30,12 @@ class Scheduler:
     def get_jobs(self) -> list[Job]:
         return self._scheduler.get_jobs()
 
-    def remove_job(self, id: str) -> None:
-        self._scheduler.remove_job(id)
+    def remove_job(self, id: str) -> bool:
+        try:
+            self._scheduler.remove_job(id)
+            return True
+        except JobLookupError:
+            return False
 
     def add_job(self, func: Callable[..., Any], trigger: BaseTrigger, id: str, replace_existing: bool=False):
         self._scheduler.add_job(func, trigger=trigger, id=id, replace_existing=replace_existing)
