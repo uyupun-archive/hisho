@@ -22,7 +22,7 @@ class Config:
             ],
             "channels": {
                 "std-mtg": "C01U1QN5M5E",
-                "proj-hisho-sandbox": "C05QN0U6U3U",
+                "svc-hisho-sandbox": "C05QN0U6U3U",
             },
             "app": None,
             "scheduler": None,
