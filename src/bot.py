@@ -35,8 +35,8 @@ def handle_app_mentions(body, say, logger) -> None:
         "mtg": lambda: mention.set_mtg_date(date=options[0] if options else None),
         "minutes": mention.reply_minutes_pic,
         "order": mention.reply_presentation_order,
-        "remind:list": mention.get_reminds,
-        "remind:remove": lambda: mention.remove_remind(id=options[0] if options else None),
+        "remind:ls": mention.get_reminds,
+        "remind:rm": lambda: mention.remove_remind(id=options[0] if options else None),
     }
 
     command_func = command_funcs.get(command, mention.reply_random_message)

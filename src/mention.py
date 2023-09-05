@@ -31,8 +31,8 @@ def reply_usage() -> str:
         "@hisho mtg YYYY/mm/dd: 今月の月次報告会の日時を設定し、前日の朝9時にリマインドします。",
         "@hisho minutes: 議事録の各担当者を決めます。",
         "@hisho order: 発表順を決めます。",
-        "@hisho remind:list: 予約されているリマインドの一覧を表示します。",
-        "@hisho remind:remove ID: 指定されたIDのリマインドを削除します。",
+        "@hisho remind:ls: 予約されているリマインドの一覧を表示します。",
+        "@hisho remind:rm ID: 指定されたIDのリマインドを削除します。",
         "@hisho usage: このメッセージを表示します。",
         "@hisho それ以外のメッセージ: ランダムなメッセージを返します。",
     ]
