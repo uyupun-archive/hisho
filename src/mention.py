@@ -3,7 +3,6 @@ import re
 from datetime import datetime, timedelta
 
 from apscheduler.triggers.date import DateTrigger
-from apscheduler.jobstores.base import JobLookupError
 
 from . import config, remind
 
@@ -69,7 +68,9 @@ def set_mtg_date(date: str | None) -> str:
         return "前日の朝9時以降に月次報告会の日時は設定できません。"
 
     id = f"mtg_reminder_{reminder_time.strftime('%Y_%m_%d_%H_%M_%S')}"
-    scheduler.add_job(remind.remind_mtg_date, trigger=DateTrigger(reminder_time), id=id, name="月次報告会直前リマインド")
+    is_added = scheduler.add_job(remind.remind_mtg_date, trigger=DateTrigger(reminder_time), id=id, name="月次報告会直前リマインド")
+    if not is_added:
+        return "既に同じ日時にリマインドが設定されています。"
     return "月次報告会の前日の朝9時にリマインドを設定しました。"
 
 

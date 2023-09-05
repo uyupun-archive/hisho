@@ -5,7 +5,7 @@ from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 from apscheduler.triggers.base import BaseTrigger
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
-from apscheduler.jobstores.base import JobLookupError
+from apscheduler.jobstores.base import ConflictingIdError, JobLookupError
 
 from . import remind
 
@@ -38,5 +38,10 @@ class Scheduler:
         except JobLookupError:
             return False
 
-    def add_job(self, func: Callable[..., Any], trigger: BaseTrigger, id: str, name: str="", replace_existing: bool=False):
-        self._scheduler.add_job(func, trigger=trigger, id=id, name=name, replace_existing=replace_existing)
+    def add_job(self, func: Callable[..., Any], trigger: BaseTrigger, id: str, name: str="", replace_existing: bool=False) -> bool:
+        try:
+            self._scheduler.add_job(func, trigger=trigger, id=id, name=name, replace_existing=replace_existing)
+            return True
+        except ConflictingIdError:
+            self._scheduler.reschedule_job(id, trigger=trigger)
+            return False
