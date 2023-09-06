@@ -78,7 +78,7 @@ class Config:
         self._config["scheduler"] = scheduler
 
     def get_post_channel_id(self) -> str:
-        return self.channels["proj-hisho-sandbox"] if self.is_debug else self.channels["std-mtg"]
+        return self.channels["svc-hisho-sandbox"] if self.is_debug else self.channels["std-mtg"]
 
 
 def get_config() -> Config:
