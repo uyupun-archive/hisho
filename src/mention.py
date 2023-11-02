@@ -76,7 +76,7 @@ def set_mtg_date(date: str | None) -> str:
 
 def reply_minutes_pic() -> str:
     selected_members = random.sample(config_.members, 3)
-    roles = ["ファシリテーター", "書記", "Googleカレンダー入力者"]
+    roles = ["ファシリテーター", "書記", "スケジュール記録担当者"]
     messages = [f"{role}は <@{member['id']}> さんです。" for role, member in zip(roles, selected_members)]
     return format_message("議事録の担当者をお伝えします。", messages + ["\nよろしくお願いします。"])
 
