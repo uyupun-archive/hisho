@@ -10,7 +10,7 @@
 - 事前に [ngrok](https://ngrok.com/download) のインストールと [ngrok](https://dashboard.ngrok.com/signup) の登録が必要
 
 ```bash
-# 事前にBot User OAuth TokenとSigning Secretの設定が必要
+# 事前に https://api.slack.com/apps/A05QQL8BRJ8 からBot User OAuth TokenとSigning Secretの設定が必要
 $ cp .env.example .env
 $ touch database.sqlite
 $ rye sync
